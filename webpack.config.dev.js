@@ -2,9 +2,10 @@ const path = require("path");
 const HtmlWebpackPlugin = require('html-webpack-plugin');
 const MiniCssExtractPlugin = require("mini-css-extract-plugin"); // Añadir el plugin al documento
 const CopyPlugin = require("copy-webpack-plugin");
-const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
-const TerserPlugin = require("terser-webpack-plugin");
+// const CssMinimizerPlugin = require("css-minimizer-webpack-plugin");
+// const TerserPlugin = require("terser-webpack-plugin");
 const Dotenv = require("dotenv-webpack");
+const BundleAnalyzerPlugin = require("webpack-bundle-analyzer").BundleAnalyzerPlugin;
 
 
 module.exports = {
@@ -25,8 +26,9 @@ module.exports = {
     },
 
     mode: "development", // Le digo que este es el modo dev.
+    devtool: "source-map",
 
-    watch: true, 
+    // watch: true, no lo necesitamos, ya lo estamos añadiendo la extension en los script de package
     
     resolve: {
         // Aqui ponemos las extensiones que tendremos en nuestro proyecto para webpack los lea
@@ -101,8 +103,15 @@ module.exports = {
                 }
             ]
         }),
-        new Dotenv()
+        new Dotenv(),
+        new BundleAnalyzerPlugin(),
     ],
+    devServer: {
+        static: path.join(__dirname, "dist"),
+        compress: true,
+        historyApiFallback: true,
+        port: 3006,
+    }
     // Eliminamos esta parte de aqui porque no es necesario optimizar en esta etapa
     // optimization: { // agregamos soporte de optimizacion
     //     minimize: true,
